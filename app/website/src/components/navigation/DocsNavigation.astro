@@ -1,0 +1,22 @@
+---
+import { getDocList } from "@/lib/collections";
+import type { Package } from "@/lib/packages";
+import DocClickable from "./DocClickable.astro";
+
+interface Props {
+  pkg: Package;
+}
+
+const { pkg } = Astro.props;
+const docList = await getDocList(pkg.id);
+
+// console.log(JSON.stringify(docList, null, 2));
+---
+
+<div>
+  <ul class="doclist-nav flex flex-col gap-1">
+    {docList.map((doc) => (
+        <DocClickable doc={doc} pkg={pkg}/>
+    ))}
+  </ul>
+</div>

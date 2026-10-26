@@ -1,0 +1,17 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import QrPlayground from '@/components/playground/qr/Playground';
+import TextPlayground from '@/components/playground/text/Playground';
+import { packagePaths, type Package } from '@/lib/packages';
+
+export const getStaticPaths = packagePaths;
+
+const { pkg } = Astro.props as { pkg: Package };
+---
+
+<Layout title="Playground" pkg={pkg}>
+	<h1 class="mb-10 text-3xl font-bold">Playground</h1>
+	{/* Hydrated components must be imported statically, so each package's playground is listed here */}
+	{pkg.id === 'qr' && <QrPlayground client:load />}
+	{pkg.id === 'text' && <TextPlayground client:load />}
+</Layout>

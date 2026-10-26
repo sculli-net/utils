@@ -1,0 +1,22 @@
+---
+import { bannerMetrics, type Package } from '@/lib/packages';
+
+interface Props {
+	pkg: Package;
+}
+
+// Layered like the skills.sh banner — the full art (with ░ shading) sits underneath in a
+// muted colour and the solid █ blocks are drawn on top.
+const { pkg } = Astro.props;
+const banner = pkg.banner;
+const solid = banner.replaceAll('░', ' ');
+
+// Container query units scale the art with its column, see bannerMetrics
+const { fontSize } = bannerMetrics(banner);
+---
+
+<div class="@container relative max-w-full overflow-hidden" role="img" aria-label={pkg.bannerLabel} style={`--banner-size: ${fontSize}`}>
+	<pre aria-hidden="true" class="invisible text-(length:--banner-size) tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{banner}</pre>
+	<pre aria-hidden="true" class="absolute top-0 left-0 text-neutral-400 text-(length:--banner-size) tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{banner}</pre>
+	<pre aria-hidden="true" class="absolute top-0 left-0 text-neutral-900 text-(length:--banner-size) tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{solid}</pre>
+</div>

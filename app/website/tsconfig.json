@@ -1,0 +1,24 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "paths": {
+      "@sculli/qr-utils": ["../../packages/qr-utils/lib/index.ts"],
+      "@sculli/qr-utils/core": ["../../packages/qr-utils/lib/core/src/index.ts"],
+      "@sculli/qr-utils/core/sjis": ["../../packages/qr-utils/lib/core/src/sjis.ts"],
+      "@sculli/qr-utils/render": ["../../packages/qr-utils/lib/render/src/index.ts"],
+      "@sculli/text-utils": ["../../packages/text-utils/lib/index.ts"],
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ]
+  }
+}

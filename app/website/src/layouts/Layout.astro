@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from "astro:transitions";
+import Sidebar from '../components/Sidebar.astro';
+import type { Package } from '@/lib/packages';
+
+interface Props {
+	title: string;
+	pkg: Package;
+}
+
+const { title, pkg } = Astro.props;
+// Each package has its own icon set; replace the files in public/favicons/[id] to rebrand one
+const icons = `/favicons/${pkg.id}`;
+---
+
+<!doctype html>
+<html lang="en" transition:animate="none">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/png" href={`${icons}/favicon-96x96.png?v=20261022`} sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href={`${icons}/favicon.svg?v=20261022`} />
+		<link rel="shortcut icon" href={`${icons}/favicon.ico?v=20261022`} />
+		<link rel="apple-touch-icon" sizes="180x180" href={`${icons}/apple-touch-icon.png?v=20261022`} />
+		<meta name="apple-mobile-web-app-title" content={pkg.title} />
+		<link rel="manifest" href={`${icons}/site.webmanifest?v=20261022`} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} · {pkg.name}</title>
+		<ClientRouter />
+	</head>
+	<body class="min-h-screen bg-white text-neutral-900">
+		<div class="flex min-h-screen flex-col md:flex-row">
+			<Sidebar pkg={pkg} />
+			<main class="flex-1 p-6 md:p-10">
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>

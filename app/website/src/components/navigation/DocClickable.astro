@@ -1,0 +1,63 @@
+---
+import { cn } from "cn"
+import { type DocRoute } from "@/lib/collections";
+import { pkgHref, type Package } from "@/lib/packages";
+interface Props {
+  doc: DocRoute;
+  pkg: Package;
+  className?: string;
+  level?: number
+}
+
+const { doc, pkg, className, level = 0 } = Astro.props;
+
+console.log(JSON.stringify(doc, null, 2))
+
+---
+<li class={cn("doclistitem group/doclink border-amber-300 border-l overflow-hidden h-fit", className)}>
+  {doc.kind === 'page' && 
+    <a 
+      href={pkgHref(pkg, `docs/${doc.doc.id}`)}
+      class="doclink" 
+    >
+      {doc.data.title}
+    </a>
+  }
+  {doc.kind === 'group' && <span class="doclink italic text-muted-foreground">{doc.data.title}</span>}
+  {doc.kind === 'folder' && doc.name}
+  {doc.children.length ? <ul class="doclist-nav pl-2">{doc.children.map((d) => <Astro.self doc={d} pkg={pkg} className="" level={level + 1} />)}</ul> : null}
+</li>
+
+<style is:global>
+
+  .doclist-nav .doclink {
+    display: block;
+    padding: calc(var(--spacing)*1.5);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  /* @media (hover: hover) {
+      .group-hover\/doclink\:bg-muted-foreground:is(:where(.group\/doclink):hover *) {
+          background-color: var(--muted-foreground);
+      }
+  } */
+
+  /* @media (hover: hover) {
+    a.doclink:is(.doclistitem:hover:not(:has(.doclistitem:hover)) *):not(.doclistitem:not(:hover) *) {
+      background-color: var(--muted-foreground);
+    }
+  } */
+
+
+  @media (hover: hover) {
+    @scope (.doclistitem) to (:scope > .doclist-nav) {
+      :scope:hover:not(:has(.doclistitem:hover)) a.doclink {
+        background-color: var(--muted-foreground);
+      }
+    }
+  }
+
+</style>

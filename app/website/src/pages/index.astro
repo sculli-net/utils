@@ -1,0 +1,28 @@
+---
+// Placeholder for the utils ecosystem homepage. It stands alone because Layout.astro and
+// Sidebar.astro are built around a single package.
+import '../styles/global.css';
+import { packageList, pkgHref } from '@/lib/packages';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>@sculli utils</title>
+	</head>
+	<body class="min-h-screen bg-white p-6 text-neutral-900 md:p-10">
+		<h1 class="mb-4 text-3xl font-bold">@sculli utils</h1>
+		<p class="mb-6 text-neutral-600">Placeholder: the homepage for the utils ecosystem will go here.</p>
+		<ul class="flex flex-col gap-2">
+			{packageList.map((pkg) => (
+				<li>
+					<a href={pkgHref(pkg)} class="underline underline-offset-4 hover:text-neutral-600">{pkg.name}</a>
+					<span class="text-neutral-500"> — {pkg.description}</span>
+				</li>
+			))}
+		</ul>
+	</body>
+</html>

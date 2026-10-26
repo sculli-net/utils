@@ -1,0 +1,45 @@
+{
+  "name": "@sculli/text-utils",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Text matching patterns",
+  "author": "Matt Scullino <contact@sculli.net>",
+  "repository": "https://github.com/sculli-net/text-utils",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "LICENCE"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "stopword": "^3.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/stopword": "^2.0.3",
+    "typescript": "^6.0.2"
+  }
+}

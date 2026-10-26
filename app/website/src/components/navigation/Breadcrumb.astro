@@ -1,0 +1,92 @@
+---
+import ChevronRight from "@/assets/icons/chevron-right.svg"
+import MoreHorizontal from "@/assets/icons/more-horizontal.svg"
+
+type Item = {
+    type: "group";
+}
+
+type LinkType = {
+    type: "folder";
+
+}
+
+
+interface Props {
+
+}
+
+
+
+---
+
+<nav
+    aria-label="breadcrumb"
+>
+    <ol class="flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground">
+
+    </ol>
+</nav>
+
+
+<style>
+
+</style>
+
+
+<!-- START COMPONENTS -->
+{false && (
+
+    <!-- Breadcrumb -->
+    <nav
+        aria-label="breadcrumb"
+    >
+        
+    </nav>
+
+    <!-- Breadcrumb list -->
+    <ol class="flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground">
+
+    </ol>
+
+
+    <!-- Breadcrumb item -->
+    <li class="inline-flex items-center gap-1">
+
+    </li>
+
+    <!-- Breadcrumb link -->
+    <a class="transition-colors hover:text-foreground">
+
+    </a>
+
+    <!-- Breadcrumb page -->
+    <span
+        class="font-normal text-foreground"
+        role="link"
+        aria-disabled="true"
+        aria-current="page"
+    >
+
+    </span>
+
+
+    <!-- Breadcrumb separator -->
+    <li
+        class="[&>svg]:size-3.5"
+        role="presentation"
+        aria-hidden="true"
+    >
+        <ChevronRight />
+    </li>
+
+    <!-- Breadcrumb ellipsis -->
+    <span class="flex size-5 items-center justify-center [&>svg]:size-4">
+        <MoreHorizontal />
+        <span class="sr-only">More</span>
+    </span>
+)}
+
+
+
+

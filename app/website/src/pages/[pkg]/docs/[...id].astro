@@ -1,0 +1,33 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getComponents } from '@/components/mdx';
+import { packageList, type Package } from '@/lib/packages';
+import '@/components/mdx/styles.css';
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(packageList.map(async (pkg) => {
+    const docs = await getCollection(pkg.id);
+    return docs
+      // __root is the collection's own index.json, which titles the docs rather than being a page
+      .filter(doc => doc.id !== '__root')
+      .map(doc => ({
+        params: { pkg: pkg.id, id: doc.id },
+        props: { pkg, doc },
+      }));
+  }));
+  return paths.flat();
+}
+
+const { pkg, doc } = Astro.props as { pkg: Package; doc: CollectionEntry<Package['id']> };
+const { Content } = await render(doc);
+
+const components = await getComponents();
+
+---
+<Layout title={`${doc.data.title} | ${pkg.label}`} pkg={pkg}>
+    <h1>{doc.data.title}</h1>
+    <div class="doc-wrapper">
+        <Content components={{ ...components }} />
+    </div>
+</Layout>

@@ -1,0 +1,27 @@
+.DS_STORE
+
+# dependencies
+node_modules
+/ref
+
+# production
+/build
+dist
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+#references
+# astro / vercel
+.astro
+.vercel

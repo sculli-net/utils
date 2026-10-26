@@ -1,0 +1,23 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Banner from '@/components/Banner.astro';
+import InstallCommand from '@/components/InstallCommand.astro';
+import { bannerMetrics, packagePaths, pkgHref, type Package } from '@/lib/packages';
+
+export const getStaticPaths = packagePaths;
+
+const { pkg } = Astro.props as { pkg: Package };
+// The install sits on the banner's centre line, so they share a wrapper as wide as the banner
+const { maxWidth } = bannerMetrics(pkg.banner);
+---
+
+<Layout title="Home" pkg={pkg}>
+	<div class="mb-16" style={`max-width: ${maxWidth}`}>
+		<div class="mb-10">
+			<Banner pkg={pkg} />
+		</div>
+		<InstallCommand packageName={pkg.name} playgroundHref={pkgHref(pkg, 'playground')} />
+	</div>
+	<h1 class="mb-4 text-3xl font-bold">Home</h1>
+	<p class="text-neutral-600">Placeholder: an overview of {pkg.name} will go here.</p>
+</Layout>

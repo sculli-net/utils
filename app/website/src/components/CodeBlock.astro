@@ -1,0 +1,146 @@
+---
+import { codeToHtml } from "shiki/bundle/web";
+import Clipboard from "../assets/icons/clipboard.svg";
+
+const { code, "data-language": lang } = Astro.props;
+
+const codeHtml = code
+  ? await codeToHtml(String(code), {
+      lang: "typescript",
+      theme: "vitesse-dark",
+    })
+  : null;
+---
+
+<div class="" data-code-wrapper>
+  <div class="relative rounded-sm overflow-hidden min-h-10 bg-slate-800 p-2">
+    {codeHtml ? <div set:html={codeHtml} class="[&_pre]:p-2" /> : <slot />}
+    <div
+      class="absolute right-1 top-1 z-2 text-white rounded-sm bg-slate-700 hover:bg-slate-500"
+    >
+      <button class="copy-code p-2 [&_svg]:size-4" data-code-copy-button aria-label="Copy code" title="Copy code">
+        <Clipboard class="code-icon code-icon-copy" aria-hidden="true" />
+        <svg class="code-icon code-icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+        <!-- <span class="code-copy-hint" data-code-hint aria-hidden="true">Ctrl C</span> -->
+      </button>
+    </div>
+  </div>
+  <span class="text-2xl text-black">
+    lang: {lang}
+  </span>
+</div>
+
+<script src="@/scripts/handle-copy.ts">
+
+</script>
+
+<style>
+
+.code-char {
+		display: inline-block;
+		white-space: pre;
+		animation: code-char 760ms ease-out backwards;
+		animation-delay: calc(var(--i) * 18ms);
+}
+
+/* Lands quickly in full amber, holds, then settles to the command's own colour (like the playground trace) */
+@keyframes code-char {
+  0% {
+    color: var(--color-amber-400);
+    filter: blur(2px);
+    transform: translateY(0.18em);
+  }
+  30% {
+    color: var(--color-amber-400);
+    filter: none;
+    transform: none;
+  }
+}
+
+.copy-code {
+  display: grid;
+  place-items: center;
+  flex: none;
+  /* width: 4rem; */
+  border-left: 1px solid color-mix(in oklab, white 12%, transparent);
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.copy-code:hover {
+  color: white;
+  background: color-mix(in oklab, white 8%, transparent);
+}
+
+.copy-code:active {
+  background: color-mix(in oklab, white 14%, transparent);
+}
+
+.copy-code:focus-visible {
+  outline: 2px solid white;
+  outline-offset: -6px;
+  border-radius: var(--radius-md);
+}
+
+.code-icon {
+  grid-area: 1 / 1;
+  /* width: 1.125rem; */
+  /* height: 1.125rem; */
+  transition:
+    opacity 150ms ease-out,
+    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.code-icon-check {
+  opacity: 0;
+  transform: scale(0.6);
+  color: var(--color-amber-400);
+}
+
+.is-copied .code-icon-copy {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.is-copied .code-icon-check {
+  opacity: 1;
+  transform: none;
+}
+
+/* A failed copy stays neutral: the command is left selected and the cell names the shortcut to copy it by hand */
+.code-copy-hint {
+  grid-area: 1 / 1;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: var(--color-neutral-300);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.is-copy-failed .code-icon-copy {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.is-copy-failed .code-copy-hint {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-indicator,
+  .code-icon {
+    transition: none;
+  }
+  .code-char {
+    animation: none;
+  }
+}
+
+</style>

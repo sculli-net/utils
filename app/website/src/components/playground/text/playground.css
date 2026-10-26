@@ -1,0 +1,44 @@
+/* Corner ticks framing the stage. They darken while the input has focus. */
+.pg-tick {
+	position: absolute;
+	width: 0.875rem;
+	height: 0.875rem;
+	border-color: var(--color-neutral-300);
+	transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.group\/playground:has(textarea:focus) .pg-tick {
+	border-color: var(--color-neutral-900);
+}
+
+/* A token that just appeared or changed flashes amber, then settles to its real colour */
+.pg-token {
+	animation: pg-token 900ms ease-out;
+}
+
+@keyframes pg-token {
+	from {
+		background-color: var(--color-amber-200);
+	}
+}
+
+/* A readout value that just changed starts amber, like the tokens */
+.pg-value {
+	animation: pg-value 900ms ease-out;
+}
+
+@keyframes pg-value {
+	from {
+		/* amber-700 keeps the small readout text above 4.5:1 while it flashes */
+		color: var(--color-amber-700, oklch(55.5% 0.163 48.998));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pg-token,
+	.pg-value {
+		animation: none;
+	}
+}

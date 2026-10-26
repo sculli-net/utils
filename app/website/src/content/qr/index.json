@@ -1,0 +1,8 @@
+{
+    "title": "Documentation",
+    "subtitle": "Docs for the @sculli/qr-utils package",
+    "index": [
+        "getting-started",
+        "usage"
+    ]
+}

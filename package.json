@@ -1,0 +1,32 @@
+{
+  "name": "sculli-utils",
+  "private": true,
+  "type": "module",
+  "description": "Monorepo for the @sculli/* utility packages and their shared docs site",
+  "author": "Matt Scullino <contact@sculli.net>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "pnpm --filter \"./packages/*\" build",
+    "test": "pnpm --filter \"./packages/*\" --if-present test",
+    "typecheck": "pnpm --filter \"./packages/*\" typecheck",
+    "qr:build": "pnpm --filter @sculli/qr-utils build",
+    "qr:test": "pnpm --filter @sculli/qr-utils test",
+    "qr:typecheck": "pnpm --filter @sculli/qr-utils typecheck",
+    "qr:publish": "pnpm qr:typecheck && pnpm qr:test && pnpm --filter @sculli/qr-utils publish",
+    "text:build": "pnpm --filter @sculli/text-utils build",
+    "text:typecheck": "pnpm --filter @sculli/text-utils typecheck",
+    "text:publish": "pnpm text:typecheck && pnpm --filter @sculli/text-utils publish",
+    "site:dev": "pnpm --filter @sculli/utils-website dev",
+    "site:build": "pnpm --filter @sculli/utils-website build",
+    "site:preview": "pnpm --filter @sculli/utils-website preview",
+    "site:check": "pnpm --filter @sculli/utils-website check"
+  },
+  "devDependencies": {
+    "@astrojs/ts-plugin": "^1.10.12",
+    "typescript": "^6.0.2"
+  }
+}
