@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Text matching patterns",
   "author": "Matt Scullino <contact@sculli.net>",
-  "repository": "https://github.com/sculli-net/text-utils",
+  "repository": "https://github.com/sculli-net/utils/tree/main/packages/text-utils",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

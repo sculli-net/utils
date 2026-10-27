@@ -1,4 +1,4 @@
-import { removeStopwords, eng,} from 'stopword'
+import { removeStopwords, eng,} from 'stopword';
 
 import { levenshteinDistance } from "./levenshtein-distance.js";
 
@@ -12,13 +12,13 @@ export const normalizeText = (text: string): string[] => {
     // Remove non-alphanumeric characters and convert to lowercase
     const alphanumbericChars = text.replace(/[^a-zA-Z0-9 ]/g, '').trim().toLowerCase();
     // Remove stopwords ( i.e. "the", "and", "of", etc. )
-    const strippedAnswer = removeStopwords(alphanumbericChars.split(' '), eng).map(word => word.trim());
+    const strippedTarget = removeStopwords(alphanumbericChars.split(' '), eng).map(word => word.trim());
 
-    return strippedAnswer
+    return strippedTarget
 }
 
-export const normalizeTargetValue = (answer: string) => {
-    return removeStopwords(answer.split(' '), eng).join(' ').trim()
+export const normalizeTargetValue = (targetValue: string) => {
+    return removeStopwords(targetValue.split(' '), eng).join(' ').trim()
 }
 
 

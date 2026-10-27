@@ -25,6 +25,4 @@ export function levenshteinDistance(value1: string, value2: string) {
     // The distance is in the bottom-right corner of the matrix
     return dist[rows - 1][cols - 1];
 
-  
-
 }

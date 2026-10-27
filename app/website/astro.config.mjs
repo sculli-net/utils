@@ -2,10 +2,12 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
-import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { componentList } from '@/components/mdx';
+
+
+import cloudflare from '@astrojs/cloudflare';
 
 
 /** Resolves a file inside a package's lib folder, i.e. resolveLib('qr-utils', 'index.ts') */
@@ -13,8 +15,7 @@ const resolveLib = (pkg, path) => fileURLToPath(new URL(`../../packages/${pkg}/l
 
 // https://astro.build/config
 export default defineConfig({
-    // TODO: set the final domain; each package lives under /[id] (see src/lib/packages.ts)
-    site: `https://utils.sculli.dev`,
+    site: `https://utils.sculli.dev`,   
     prefetch: true,
     integrations: [react(), sitemap(), mdx({
         shikiConfig: {
@@ -24,7 +25,8 @@ export default defineConfig({
             ignoreElementNames: [ ...componentList ]
         }
     })],
-    adapter: vercel(),
+    build: { format: 'preserve' },
+    adapter: cloudflare(),
     vite: {
         plugins: [tailwindcss()],
         resolve: {
@@ -37,5 +39,8 @@ export default defineConfig({
                 { find: /^@sculli\/text-utils$/, replacement: resolveLib('text-utils', 'index.ts') },
             ],
         },
+    },
+    experimental: {
+        clientPrerender: true,
     },
 });

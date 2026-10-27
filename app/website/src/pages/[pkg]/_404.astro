@@ -1,0 +1,11 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { type Package } from '@/lib/packages';
+
+const { pkg } = Astro.props as { pkg: Package };
+---
+
+<Layout title={`Not Found | ${pkg.name}`}>
+    <p>{pkg.name} is not found!!</p>
+</Layout>
+

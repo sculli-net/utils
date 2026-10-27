@@ -1,0 +1,21 @@
+---
+import { appender, cn } from "@/lib/utils";
+import ChevronDown from "@/assets/icons/chevron-down.svg"
+
+interface Props {
+    menuId?: string;
+    className?: string;
+    displayIcon?: boolean;
+}
+
+const { menuId, className, displayIcon = true } = Astro.props;
+
+const withMenuId = appender(menuId);
+
+---
+
+
+<div>
+    <slot name="title" />
+    <slot />
+</div>

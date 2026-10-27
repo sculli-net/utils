@@ -4,7 +4,7 @@
   "type": "module",
   "description": "QR code generation and SVG, PNG and HTML rendering for Node and browsers",
   "author": "Matt Scullino <contact@sculli.net>",
-  "repository": "https://github.com/sculli-net/qr-utils",
+  "repository": "https://github.com/sculli-net/utils/tree/main/packages/qr-utils",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

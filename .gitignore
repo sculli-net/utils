@@ -25,3 +25,5 @@ yarn-error.log*
 # astro / vercel
 .astro
 .vercel
+
+.wrangler/

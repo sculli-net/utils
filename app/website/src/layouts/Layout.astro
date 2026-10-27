@@ -6,12 +6,12 @@ import type { Package } from '@/lib/packages';
 
 interface Props {
 	title: string;
-	pkg: Package;
+	pkg?: Package;
 }
 
 const { title, pkg } = Astro.props;
 // Each package has its own icon set; replace the files in public/favicons/[id] to rebrand one
-const icons = `/favicons/${pkg.id}`;
+const icons = `/favicons/${pkg?.id || `__root`}`;
 ---
 
 <!doctype html>
@@ -23,21 +23,40 @@ const icons = `/favicons/${pkg.id}`;
 		<link rel="icon" type="image/svg+xml" href={`${icons}/favicon.svg?v=20261022`} />
 		<link rel="shortcut icon" href={`${icons}/favicon.ico?v=20261022`} />
 		<link rel="apple-touch-icon" sizes="180x180" href={`${icons}/apple-touch-icon.png?v=20261022`} />
-		<meta name="apple-mobile-web-app-title" content={pkg.title} />
+		<meta name="apple-mobile-web-app-title" content={pkg?.title || 'sculli/utils'} />
 		<link rel="manifest" href={`${icons}/site.webmanifest?v=20261022`} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title} · {pkg.name}</title>
+		<title>{title}{pkg? ` · ${pkg.name}` : ''}</title>
 		<ClientRouter />
 	</head>
 	<body class="min-h-screen bg-white text-neutral-900">
 		<div class="flex min-h-screen flex-col md:flex-row">
-			<Sidebar pkg={pkg} />
+			{ pkg ? <Sidebar pkg={pkg} /> : null }
 			<main class="flex-1 p-6 md:p-10">
 				<slot />
 			</main>
 		</div>
 	</body>
 </html>
+
+<script is:inline>
+	const getThemePreference = () => {
+		if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+			return localStorage.getItem('theme');
+		}
+		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	};
+	const isDark = getThemePreference() === 'dark';
+	document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+ 
+	if (typeof localStorage !== 'undefined') {
+		const observer = new MutationObserver(() => {
+			const isDark = document.documentElement.classList.contains('dark');
+			localStorage.setItem('theme', isDark ? 'dark' : 'light');
+		});
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+	}
+</script>
