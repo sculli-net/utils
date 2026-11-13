@@ -1,28 +1,44 @@
-export function levenshteinDistance(value1: string, value2: string) {
+/**
+ * Levenshtein edit distance between two strings, counted in code points (not UTF-16 units).
+ *
+ * Pass `max` when you only need to know whether the distance is within a limit: the function
+ * then stops as soon as the distance is known to be over it and returns `max + 1`. Any result
+ * up to `max` is exact.
+ */
+export function levenshteinDistance(value1: string, value2: string, max = Infinity): number {
+    if (value1 === value2) return 0;
 
+    // Iterate the shorter string in the inner loop, so the rows stay small
+    let a = Array.from(value1);
+    let b = Array.from(value2);
+    if (a.length < b.length) [a, b] = [b, a];
 
-    const rows = value1.length + 1;
-    const cols = value2.length + 1;
-    const dist = Array.from(Array(rows), () => new Array(cols));
+    // The distance is at least the difference in length
+    if (a.length - b.length > max) return max + 1;
+    if (b.length === 0) return a.length;
 
-    for (let i = 0; i < rows; i++) {
-      dist[i][0] = i;
+    let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
+    let current = new Array<number>(b.length + 1);
+
+    for (let i = 1; i <= a.length; i++) {
+        current[0] = i;
+        let rowMin = i;
+
+        for (let j = 1; j <= b.length; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            current[j] = Math.min(
+                previous[j] + 1,          // Deletion
+                current[j - 1] + 1,       // Insertion
+                previous[j - 1] + cost,   // Substitution
+            );
+            if (current[j] < rowMin) rowMin = current[j];
+        }
+
+        // Every later row is at least this row's minimum
+        if (rowMin > max) return max + 1;
+        [previous, current] = [current, previous];
     }
-    for (let i = 0; i < cols; i++) {
-      dist[0][i] = i;
-    }
 
-    for (let i = 1; i < rows; i++) {
-      for (let j = 1; j < cols; j++) {
-          const cost = value1[i - 1] === value2[j - 1] ? 0 : 1;
-          dist[i][j] = Math.min(dist[i - 1][j] + 1,       // Deletion
-          dist[i][j - 1] + 1,       // Insertion
-          dist[i - 1][j - 1] + cost // Substitution
-          );
-      }
-    }
-
-    // The distance is in the bottom-right corner of the matrix
-    return dist[rows - 1][cols - 1];
-
+    const distance = previous[b.length];
+    return distance > max ? max + 1 : distance;
 }

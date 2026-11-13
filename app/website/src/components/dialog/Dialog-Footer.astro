@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+type Props = HTMLAttributes<"div">;
+
+// `slot` is consumed by the parent; don't render it as an attribute
+const { class: className, slot: _slot, ...rest } = Astro.props;
+
+const hasActions = Astro.slots.has("close") || Astro.slots.has("confirm");
+---
+
+<div
+    data-slot="dialog-footer"
+    class={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+    {...rest}
+>
+    <slot />
+    {hasActions && (
+        // Buttons in these slots close the dialog and set its returnValue to their `value`, without JS.
+        <form method="dialog" class="contents">
+            <slot name="close" />
+            <slot name="confirm" />
+        </form>
+    )}
+</div>

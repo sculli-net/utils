@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+/** Use as `<DialogOverlay slot="overlay" />`. The Dialog shows it in the top layer, beneath the dialog. */
+type Props = HTMLAttributes<"div">;
+
+// `slot` is consumed by the parent; don't render it as an attribute
+const { class: className, slot: _slot, ...rest } = Astro.props;
+---
+
+<div
+    data-slot="dialog-overlay"
+    class={cn("absolute inset-0 bg-black/10 supports-backdrop-filter:backdrop-blur-xs", className)}
+    {...rest}
+>
+    <slot />
+</div>

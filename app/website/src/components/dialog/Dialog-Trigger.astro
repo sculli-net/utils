@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends Omit<HTMLAttributes<"button">, "type"> {
+    /** The dialog's ID (`ctx.id`). Optional: `<dialog-root>` links the trigger when it connects. */
+    for?: string;
+}
+
+const { for: forId, class: className, slot: _slot, ...rest } = Astro.props;
+---
+
+<button
+    type="button"
+    data-slot="dialog-trigger"
+    command="show-modal"
+    commandfor={forId}
+    class={className}
+    {...rest}
+>
+    <slot />
+</button>

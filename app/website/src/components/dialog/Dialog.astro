@@ -1,0 +1,49 @@
+---
+import { nanoid } from "nanoid";
+import { cn } from "@/lib/utils";
+import type { DialogContext } from "./types";
+
+interface Props {
+    /** ID of the `<dialog>`. Generated when omitted; the title and description IDs derive from it. */
+    id?: string;
+    /**
+     * Classes for the backdrop. With an `overlay` slot they go on the overlay's top-layer wrapper;
+     * on their own they style that wrapper as a plain overlay. Without either, the native
+     * `::backdrop` is used (styled in DialogContent).
+     */
+    backdropClass?: string;
+}
+
+const { id = `dialog-${nanoid(8)}`, backdropClass } = Astro.props;
+
+const context: DialogContext = {
+    id,
+    titleId: `${id}-title`,
+    descriptionId: `${id}-description`,
+};
+
+// A function child receives the context: {(ctx) => <DialogTrigger for={ctx.id} />}
+const content = Astro.slots.has("default") ? await Astro.slots.render("default", [context]) : "";
+const hasOverlay = Astro.slots.has("overlay") || Boolean(backdropClass);
+---
+
+<dialog-root data-dialog-id={id} data-overlay={hasOverlay ? "" : undefined} class="contents">
+    <Fragment set:html={content} />
+    {hasOverlay && (
+        <div
+            popover="manual"
+            data-slot="dialog-portal"
+            class={cn(
+                "fixed inset-0 m-0 size-full max-h-none max-w-none overflow-hidden border-0 bg-transparent p-0",
+                "opacity-0 transition-[opacity,display,overlay] transition-discrete duration-150 open:opacity-100 starting:open:opacity-0",
+                backdropClass,
+            )}
+        >
+            <slot name="overlay" />
+        </div>
+    )}
+</dialog-root>
+
+<script>
+    import "./dialog-root";
+</script>

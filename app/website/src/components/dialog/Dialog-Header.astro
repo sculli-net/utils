@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+interface Props extends Omit<HTMLAttributes<"div">, "title"> {
+    title?: string;
+    description?: string;
+    /** `ctx.titleId`. Optional: `<dialog-root>` assigns one and sets `aria-labelledby`. */
+    titleId?: string;
+    /** `ctx.descriptionId`. Optional: `<dialog-root>` assigns one and sets `aria-describedby`. */
+    descriptionId?: string;
+}
+
+// `slot` is consumed by the parent; don't render it as an attribute
+const { title, description, titleId, descriptionId, class: className, slot: _slot, ...rest } = Astro.props;
+---
+
+<div data-slot="dialog-header" class={cn("flex flex-col gap-1.5", className)} {...rest}>
+    {title && (
+        <h2 data-slot="dialog-title" id={titleId} class="text-base leading-none font-medium">
+            {title}
+        </h2>
+    )}
+    {description && (
+        <p data-slot="dialog-description" id={descriptionId} class="text-muted-foreground">
+            {description}
+        </p>
+    )}
+    <slot />
+</div>

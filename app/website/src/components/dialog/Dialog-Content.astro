@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+interface Props extends HTMLAttributes<"dialog"> {
+    /** Close on backdrop click as well as Esc (`closedby="any"`). Default `true`. */
+    dismissible?: boolean;
+}
+
+const { class: className, dismissible = true, ...rest } = Astro.props;
+---
+
+<dialog
+    data-slot="dialog-content"
+    closedby={dismissible ? "any" : "closerequest"}
+    class={cn(
+        "fixed inset-0 m-auto h-fit w-full max-w-[calc(100%-2rem)] gap-4 overflow-visible rounded-xl border-0 bg-background p-4 text-sm text-foreground shadow-2xl ring-1 ring-foreground/10 outline-none open:grid sm:max-w-sm",
+        // Enter/exit transition (closed dialogs are display: none, so display and overlay transition discretely)
+        "scale-95 opacity-0 transition-[opacity,scale,display,overlay] transition-discrete duration-150 open:scale-100 open:opacity-100 starting:open:scale-95 starting:open:opacity-0",
+        // Native backdrop, used when the Dialog has no overlay
+        "backdrop:bg-transparent backdrop:transition-[background-color,display,overlay] backdrop:transition-discrete backdrop:duration-150 open:backdrop:bg-black/10 starting:open:backdrop:bg-transparent supports-backdrop-filter:backdrop:backdrop-blur-xs",
+        // With an overlay, the native backdrop stays (it receives the light-dismiss clicks) but is invisible
+        "in-data-overlay:backdrop:bg-transparent! in-data-overlay:backdrop:backdrop-blur-none!",
+        className,
+    )}
+    {...rest}
+>
+    <slot name="header" />
+    <slot />
+    <slot name="footer" />
+</dialog>

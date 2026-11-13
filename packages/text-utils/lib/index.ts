@@ -1,26 +1,13 @@
-
-import { normalizeText, normalizeTargetValue } from "./matching/text-match.js"
-
-const targetValue = '';
-const currentValue = '';
-
-const normalizedAnswer = normalizeText(currentValue)
-const normalizedTargetValue = normalizeText(targetValue)
-
-const normalizedTarget = normalizeTargetValue(targetValue)
-
-const threshold = () => {
-    const targetValueLength = normalizedTargetValue.join('').length
-    const threshold = Math.min(2, Math.round(targetValueLength * 0.1))
-    return threshold
-}
-
-
-type TextUtilsConfig = {
-    
-};
-
-const config: TextUtilsConfig = {};
-
-
-const findClosestMatch = ( current: string, targetList: string[] ) => {};
+export {
+    createMatcher,
+    normalizeText,
+    removeAccents,
+    textMatch,
+    type LanguageCode,
+    type NormalizeConfig,
+    type TextMatchConfig,
+    type TextMatchResult,
+    type Threshold,
+} from './matching/text-match.js';
+export { findClosestMatch, findMatches } from './matching/group.js';
+export { levenshteinDistance } from './matching/levenshtein-distance.js';

@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/** Closes the dialog from anywhere inside it; `value` becomes the dialog's returnValue. */
+interface Props extends Omit<HTMLAttributes<"button">, "type"> {
+    /** The dialog's ID (`ctx.id`). Optional: `<dialog-root>` links the button when it connects. */
+    for?: string;
+}
+
+const { for: forId, class: className, slot: _slot, ...rest } = Astro.props;
+---
+
+<button
+    type="button"
+    data-slot="dialog-close"
+    command="close"
+    commandfor={forId}
+    class={className}
+    {...rest}
+>
+    <slot />
+</button>

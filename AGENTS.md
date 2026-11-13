@@ -25,9 +25,9 @@ are in `app/website/AGENTS.md`, and the site's design system is `app/website/DES
 | -- | -- |
 | `pnpm site:dev` / `site:build` / `site:preview` / `site:check` | Run the website |
 | `pnpm build` / `typecheck` / `test` | Run across every package in `packages/*` |
-| `pnpm qr:build` / `qr:test` / `qr:typecheck` | One package (`text:*` has build and typecheck; it has no tests yet) |
+| `pnpm qr:build` / `qr:test` / `qr:typecheck` | One package (`text:build` / `text:test` / `text:typecheck` likewise) |
 | `pnpm qr:publish` | Typecheck, test, then `pnpm publish` `@sculli/qr-utils` (`prepack` builds `dist/`) |
-| `pnpm text:publish` | Typecheck, then `pnpm publish` `@sculli/text-utils` |
+| `pnpm text:publish` | Typecheck, test, then `pnpm publish` `@sculli/text-utils` |
 
 `pnpm publish` refuses to run with uncommitted changes or off the default branch. Bump the package's
 `version` before publishing. Both packages have `publishConfig.access: public`.

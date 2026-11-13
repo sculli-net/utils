@@ -1,0 +1,19 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { 
+    Dialog
+} from "@/components/dialog"
+
+import SlotInsert from "@/components/experiments/slot-insert.astro"
+import SlotWrapper from "@/components/experiments/slot-wrapper.astro"
+
+---
+<Layout title="Home">
+    <div class="min-h-96 w-full max-w-2xl mx-auto flex flex-col gap-24">
+        Testing page
+        <SlotWrapper>
+            <SlotInsert slot="named-slot" />
+        </SlotWrapper>
+    </div>
+
+</Layout>

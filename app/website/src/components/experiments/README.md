@@ -1,0 +1,1 @@
+This is just to experiment with the component & slot capabilities in Astro. Can be deleted once used.
