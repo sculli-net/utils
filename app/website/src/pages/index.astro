@@ -1,28 +1,83 @@
 ---
-// Placeholder for the utils ecosystem homepage. It stands alone because Layout.astro and
-// Sidebar.astro are built around a single package.
-import '../styles/global.css';
+import Layout from '@/layouts/Layout.astro';
+import Banner from '@/components/Banner.astro';
+import ChevronRight from '@/assets/icons/chevron-right.svg';
 import { packageList, pkgHref } from '@/lib/packages';
 ---
-
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" href="/favicon.ico" />
-		<title>sculli/utils</title>
-	</head>
-	<body class="min-h-screen bg-white p-6 text-neutral-900 md:p-10">
-		<h1 class="mb-4 text-3xl font-bold">Utils | sculli.dev</h1>
-		<p class="mb-6 text-neutral-600">Placeholder: the homepage for the utils ecosystem will go here.</p>
-		<ul class="flex flex-col gap-2">
-			{packageList.map((pkg) => (
-				<li>
-					<a href={pkgHref(pkg)} class="underline underline-offset-4 hover:text-neutral-600">{pkg.name}</a>
-					<span class="text-neutral-500"> — {pkg.description}</span>
-				</li>
-			))}
-		</ul>
-	</body>
-</html>
+<Layout title="sculli/utils">
+  <div class="home">
+    <header>
+      <h1>Quick utilities<br />for data transformation<br />on the web</h1>
+      <p>TypeScript utilities by <a href="https://mattscullino.com">Matt Scullino</a>.</p>
+    </header>
+    <section class="packages" aria-label="Utility packages">
+      {packageList.map(pkg => (
+        <a class="package" href={pkgHref(pkg)}>
+          <div class="art"><Banner pkg={pkg} /></div>
+          <div class="package-details">
+            <h2>{pkg.name}</h2>
+            <p>{pkg.description}</p>
+          </div>
+          <ChevronRight class="arrow" aria-hidden="true" />
+        </a>
+      ))}
+    </section>
+    <footer>
+      <a href="https://mattscullino.com">Matt Scullino</a>
+      <a href="https://github.com/sculli-net">GitHub</a>
+    </footer>
+  </div>
+</Layout>
+<style>
+.home { max-width: 1120px; margin-inline: auto; min-height: calc(100dvh - 80px); display: flex; flex-direction: column; justify-content: center; gap: clamp(24px, 5vh, 56px); }
+header { padding-top: 8px; }
+h1 { font-size: clamp(2rem, 4vw, 3.75rem); font-weight: 600; line-height: 1.08; letter-spacing: -.045em; }
+header p { color: var(--muted-foreground); margin-top: 16px; font-size: 15px; }
+.packages { display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--border); }
+.package { position: relative; min-width: 0; padding: 32px 28px 28px; display: flex; flex-direction: column; gap: 28px; text-decoration: none; border-radius: 4px; }
+.package:first-child { border-right: 1px solid var(--border); padding-left: 0; }
+.package:last-child { padding-right: 0; }
+.art { min-height: 88px; display: flex; align-items: center; }
+.art > :global(div) { width: 100%; }
+h2 { font-size: 16px; font-weight: 600; letter-spacing: -.02em; }
+.package-details { padding-right: 24px; }
+.package-details p { max-width: 38ch; font-size: 14px; line-height: 1.6; color: var(--muted-foreground); margin-top: 8px; }
+.arrow { position: absolute; right: 24px; bottom: 30px; width: 18px; height: 18px; }
+.package:last-child .arrow { right: 0; }
+.package:hover h2 { text-decoration: underline; text-underline-offset: 5px; }
+.package:focus-visible { outline: 3px solid oklch(82.8% .189 84.429); outline-offset: 5px; }
+.package:active .art { transform: translateY(1px); }
+footer { display: flex; gap: 20px; font-size: 13px; color: var(--muted-foreground); }
+footer a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 4px; }
+footer a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .arrow { transition: transform 180ms ease; }
+  .package:hover .arrow { transform: translateX(4px); }
+  .home { animation: arrive 220ms ease-out; }
+  @keyframes arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+}
+@media (max-width: 767px) {
+  .home { min-height: calc(100dvh - 176px); gap: 24px; justify-content: space-between; }
+  h1 { font-size: clamp(28px, 7vw, 44px); }
+  .packages { grid-template-columns: 1fr; }
+  .package, .package:first-child, .package:last-child { padding: 18px 0; border-right: 0; gap: 10px; }
+  .package + .package { border-top: 1px solid var(--border); }
+  .art { min-height: 0; max-width: 260px; }
+  .arrow, .package:last-child .arrow { right: 0; bottom: 20px; }
+  .package-details p { font-size: 13px; margin-top: 4px; max-width: 44ch; }
+  header p { margin-top: 10px; }
+}
+@media (max-height: 700px) and (min-width: 768px) {
+  .home { gap: 24px; }
+  .package { padding-top: 20px; padding-bottom: 20px; gap: 16px; }
+}
+</style>
+<style is:global>
+body.ecosystem-root { min-height: 100dvh; background: var(--background); color: var(--foreground); }
+.ecosystem-root > div { min-height: 100dvh; }
+.dark .ecosystem-root aside { background: var(--secondary); border-color: var(--border); }
+.dark .ecosystem-root .repository-link { color: var(--foreground); }
+.dark .ecosystem-root .art pre.text-neutral-900 { color: var(--foreground); }
+.dark .ecosystem-root .art pre.text-neutral-400 { color: var(--muted-foreground); }
+.dark .ecosystem-root nav a[aria-current="page"] { background: var(--primary); color: var(--primary-foreground); }
+</style>

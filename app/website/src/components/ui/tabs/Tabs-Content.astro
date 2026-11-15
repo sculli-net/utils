@@ -1,0 +1,17 @@
+---
+
+import { cn } from "@/lib/utils";
+
+interface Props {
+    value: string;
+    class?: string;
+}
+
+const { value, class: className } = Astro.props;
+---
+
+<div data-slot="tabs-content" data-tabs-value={value} role="tabpanel" aria-labelledby={value} class="contents")>
+    <div class={cn("flex-1 text-sm outline-none", className)}>
+        <slot />
+    </div>
+</div>

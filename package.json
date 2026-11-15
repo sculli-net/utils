@@ -29,5 +29,8 @@
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.12",
     "typescript": "^6.0.2"
+  },
+  "imports": {
+    "#styles/*": "./src/styles/*"
   }
 }

@@ -1,0 +1,17 @@
+---
+interface Props { value: string; href?: string; current?: boolean; className?: string; packageId?: string; }
+const { value, href, current, className, packageId } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : 'button'} data-value={value} data-package-link={packageId} data-slot="dropdown-item" aria-current={current ? 'true' : undefined} class={className}>
+  <slot /><span class="selected" aria-hidden="true">✓</span><slot name="shortcut" />
+</Tag>
+<style>
+[data-slot="dropdown-item"] { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 12px; border-radius: 4px; font-size: 14px; text-align: left; cursor: pointer; text-decoration: none; }
+[data-slot="dropdown-item"]:hover, [data-slot="dropdown-item"]:focus-visible { background: var(--accent); outline: none; }
+[data-slot="dropdown-item"]:focus-visible { box-shadow: inset 0 0 0 2px currentColor; }
+[data-slot="dropdown-item"]:active { background: var(--secondary); }
+.selected { visibility: hidden; }
+[aria-current="true"] { font-weight: 600; }
+[aria-current="true"] .selected { visibility: visible; }
+</style>

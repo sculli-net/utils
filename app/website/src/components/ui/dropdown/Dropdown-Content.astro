@@ -1,0 +1,12 @@
+---
+interface Props { className?: string; }
+const { className } = Astro.props;
+---
+<div popover data-slot="dropdown-content" class={className}><slot /></div>
+<style>
+[data-slot="dropdown-content"] { position: fixed; inset: auto; margin: 0; padding: 5px; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--background); color: var(--foreground); transform-origin: top left; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot="dropdown-content"]:popover-open { animation: menu-in 160ms cubic-bezier(.16,1,.3,1); }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+}
+</style>

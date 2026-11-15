@@ -32,10 +32,10 @@ const icons = `/favicons/${pkg?.id || `__root`}`;
 		<title>{title}{pkg? ` · ${pkg.name}` : ''}</title>
 		<ClientRouter />
 	</head>
-	<body class="min-h-screen bg-white text-neutral-900">
+	<body class:list={['min-h-screen bg-white text-neutral-900', { 'ecosystem-root': !pkg }] }>
 		<div class="flex min-h-screen flex-col md:flex-row">
-			{ pkg ? <Sidebar pkg={pkg} /> : null }
-			<main class="flex-1 p-6 md:p-10">
+			<Sidebar pkg={pkg} />
+			<main class="min-w-0 flex-1 p-6 md:p-10">
 				<slot />
 			</main>
 		</div>

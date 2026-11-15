@@ -1,5 +1,5 @@
-export { cn } from "cn"
-
+// export { cn } from "cn"
+export * from "@/../cva.config";
 type StringableValue = string | number | false | null | undefined;
 
 const interpolateString = (input: TemplateStringsArray, ...args: StringableValue[]): string =>

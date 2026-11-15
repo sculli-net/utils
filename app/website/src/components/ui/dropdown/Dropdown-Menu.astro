@@ -1,0 +1,94 @@
+---
+import { nanoid } from 'nanoid';
+interface Props { defaultValue?: string; }
+const { defaultValue } = Astro.props;
+---
+<dropdown-menu data-menuid={nanoid(8)} defaultvalue={defaultValue}><slot /></dropdown-menu>
+<style>dropdown-menu { display: block; }</style>
+<script>
+class DropdownMenu extends HTMLElement {
+  private controller?: AbortController;
+  connectedCallback() {
+    this.controller?.abort();
+    this.controller = new AbortController();
+    const { signal } = this.controller;
+    const trigger = this.querySelector<HTMLButtonElement>('[data-slot="dropdown-trigger"]');
+    const content = this.querySelector<HTMLElement>('[data-slot="dropdown-content"]');
+    if (!trigger || !content) return;
+    const id = `dropdown-${this.dataset.menuid}`;
+    content.id = id;
+    trigger.setAttribute('popovertarget', id);
+    trigger.setAttribute('aria-controls', id);
+    trigger.setAttribute('aria-expanded', 'false');
+    const items = () => Array.from(content.querySelectorAll<HTMLElement>('[data-slot="dropdown-item"]:not([disabled])'));
+    const updateValue = (value: string) => {
+      this.setAttribute('value', value);
+      items().forEach(item => {
+        const selected = (item.getAttribute('value') ?? item.dataset.value) === value;
+        if (selected) item.setAttribute('aria-current', 'true');
+        else item.removeAttribute('aria-current');
+      });
+    };
+    const initialValue = this.getAttribute('value') ?? this.getAttribute('defaultvalue');
+    if (initialValue) updateValue(initialValue);
+    const position = () => {
+      const rect = trigger.getBoundingClientRect();
+      const width = Math.min(Math.max(rect.width, 224), window.innerWidth - 16);
+      content.style.width = `${width}px`;
+      content.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - width - 8))}px`;
+      content.style.top = `${rect.bottom + 6}px`;
+      content.style.maxHeight = `${Math.max(80, window.innerHeight - rect.bottom - 14)}px`;
+    };
+    content.addEventListener('beforetoggle', (event) => {
+      const open = (event as ToggleEvent).newState === 'open';
+      if (open) position();
+      trigger.setAttribute('aria-expanded', String(open));
+    }, { signal });
+    window.addEventListener('resize', position, { signal });
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      event.preventDefault();
+      content.showPopover();
+      const list = items();
+      (event.key === 'ArrowDown' ? list[0] : list.at(-1))?.focus();
+    }, { signal });
+    content.addEventListener('keydown', (event) => {
+      const list = items();
+      const index = list.indexOf(document.activeElement as HTMLElement);
+      let next: number;
+      switch (event.key) {
+        case 'ArrowDown': next = (index + 1) % list.length; break;
+        case 'ArrowUp': next = (index - 1 + list.length) % list.length; break;
+        case 'Home': next = 0; break;
+        case 'End': next = list.length - 1; break;
+        case 'Escape':
+          event.preventDefault(); content.hidePopover(); trigger.focus(); return;
+        default: return;
+      }
+      event.preventDefault(); list[next]?.focus();
+    }, { signal });
+    this.addEventListener('focusout', (event) => {
+      // Safari does not focus links on pointer-down. In that case relatedTarget
+      // is null: closing here would hide the link before its click can fire.
+      // Only dismiss for an actual focus move outside; the native popover
+      // handles outside pointer clicks and Escape itself.
+      const next = event.relatedTarget;
+      if (next instanceof Node && !this.contains(next)) content.hidePopover();
+    }, { signal });
+    content.addEventListener('click', (event) => {
+      const item = (event.target as Element).closest<HTMLElement>('[data-slot="dropdown-item"]');
+      if (!item || item.hasAttribute('disabled')) return;
+      const value = item.getAttribute('value') ?? item.dataset.value;
+      if (value) {
+        if (item.tagName === 'BUTTON') updateValue(value);
+        this.dispatchEvent(new CustomEvent('dropdown:select', { detail: { value, menuId: this.dataset.menuid }, bubbles: true }));
+      }
+      content.hidePopover();
+      if (item.tagName === 'BUTTON') trigger.focus();
+    }, { signal });
+    document.addEventListener('astro:before-swap', () => content.hidePopover(), { signal });
+  }
+  disconnectedCallback() { this.controller?.abort(); }
+}
+if (!customElements.get('dropdown-menu')) customElements.define('dropdown-menu', DropdownMenu);
+</script>

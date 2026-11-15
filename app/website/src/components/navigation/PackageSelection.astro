@@ -1,24 +1,16 @@
 ---
-import {
-  DropdownMenu,
-  DropdownTrigger,
-  DropdownContent,
-  DropdownGroup,
-  DropdownItem,
-} from "@/components/dropdown";
+import { DropdownMenu, DropdownTrigger, DropdownContent, DropdownItem } from '@/components/ui/dropdown';
+import { packageList, pkgHref, type Package } from '@/lib/packages';
+interface Props { pkg?: Package; }
+const { pkg } = Astro.props;
+const section = Astro.url.pathname.split('/')[2];
 ---
-
-
-<DropdownMenu>
-    <DropdownTrigger>
-        PackageName
-    </DropdownTrigger>
-    <DropdownContent>
-        <DropdownItem value="item-1">
-            Item 1
-        </DropdownItem>
-        <DropdownItem value="item-2">
-            Item 2
-        </DropdownItem>
-    </DropdownContent>
+<DropdownMenu defaultValue={pkg?.id ?? 'root'}>
+  <DropdownTrigger>{pkg?.name ?? 'sculli/utils'}</DropdownTrigger>
+  <DropdownContent>
+    <DropdownItem value="root" href="/" current={!pkg}>sculli/utils</DropdownItem>
+    <div class="separator"></div>
+    {packageList.map(other => <DropdownItem value={other.id} href={pkgHref(other, section ?? '')} packageId={other.id} current={other.id === pkg?.id}>{other.name}</DropdownItem>)}
+  </DropdownContent>
 </DropdownMenu>
+<style>.separator { height: 1px; background: var(--border); margin: 5px 7px; }</style>

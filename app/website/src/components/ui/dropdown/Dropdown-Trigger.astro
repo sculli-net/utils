@@ -1,0 +1,19 @@
+---
+import ChevronDown from '@/assets/icons/chevron-down.svg';
+interface Props { className?: string; displayIcon?: boolean; }
+const { className, displayIcon = true } = Astro.props;
+---
+<button type="button" data-slot="dropdown-trigger" class={className} aria-expanded="false">
+  <span><slot /></span>
+  {displayIcon && <slot name="icon"><ChevronDown aria-hidden="true" /></slot>}
+</button>
+<style>
+button { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; padding: .6rem .75rem; border-radius: 6px; color: inherit; text-align: left; font-size: 1rem; font-weight: 600; cursor: pointer; }
+button:hover, button[aria-expanded="true"] { background: color-mix(in oklab, currentColor 7%, transparent); }
+button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+button:active { transform: translateY(1px); }
+span { min-width: 0; }
+button :global(svg) { width: 14px; height: 14px; flex-shrink: 0; transition: transform 160ms ease; }
+button[aria-expanded="true"] :global(svg) { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { button :global(svg) { transition: none; } }
+</style>

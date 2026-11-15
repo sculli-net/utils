@@ -1,0 +1,166 @@
+---
+
+import { cn } from "@/lib/utils";
+
+interface Props {
+    value: string;
+    class?: string;
+}
+
+const { value, class: className } = Astro.props;
+---
+
+<button
+    data-slot="tabs-trigger"
+    data-tabs-value={value}
+    value={value}
+    role="tab"
+    aria-selected="false"
+    class={cn("tab-trigger", className)}>
+    <slot />
+</button>
+
+
+<style>
+
+    @layer components {
+        .tab-trigger {
+            position: relative;
+            display: inline-flex;
+            height: calc(100% - 1px);
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing) * 1.5);
+            border-radius: var(--radius-md);
+            border-style: solid;
+            border-width: 1px;
+            border-color: transparent;
+            padding-inline: calc(var(--spacing) * 1.5);
+            padding-block: calc(var(--spacing) * 0.5);
+            font-size: var(--text-sm);
+            line-height: var(--text-sm--line-height);
+            font-weight: var(--font-weight-medium);
+            white-space: nowrap;
+            color: color-mix(in oklab, var(--foreground) 60%, transparent);
+            transition-property: all;
+            transition-timing-function: var(--default-transition-timing-function);
+            transition-duration: var(--default-transition-duration);
+            --trigger-shadow: 0 0 #0000;
+            --trigger-ring: 0 0 #0000;
+            box-shadow: var(--trigger-ring), var(--trigger-shadow);
+        }
+
+        .tab-trigger::after {
+            content: "";
+            position: absolute;
+            background-color: var(--foreground);
+            opacity: 0;
+            transition-property: opacity;
+            transition-timing-function: var(--default-transition-timing-function);
+            transition-duration: var(--default-transition-duration);
+        }
+
+        :global(:where(.group\/tabs)[data-vertical]) .tab-trigger {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        :global(:where(.group\/tabs-list)[data-variant="line"]) .tab-trigger {
+            background-color: transparent;
+        }
+
+        :global(:where(.group\/tabs)[data-horizontal]) .tab-trigger::after {
+            inset-inline: 0;
+            bottom: calc(var(--spacing) * -1.25);
+            height: calc(var(--spacing) * 0.5);
+        }
+
+        :global(:where(.group\/tabs)[data-vertical]) .tab-trigger::after {
+            inset-block: 0;
+            right: calc(var(--spacing) * -1);
+            width: calc(var(--spacing) * 0.5);
+        }
+
+        @media (hover: hover) {
+            .tab-trigger:hover {
+                color: var(--foreground);
+            }
+        }
+
+        .tab-trigger:focus-visible {
+            border-color: var(--ring);
+            outline: 1px solid var(--ring);
+            --trigger-ring: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+        }
+
+        .tab-trigger:disabled,
+        .tab-trigger[aria-disabled="true"] {
+            pointer-events: none;
+            opacity: 50%;
+        }
+
+        .tab-trigger:has(:global([data-icon="inline-end"])) {
+            padding-right: var(--spacing);
+        }
+
+        .tab-trigger:has(:global([data-icon="inline-start"])) {
+            padding-left: var(--spacing);
+        }
+
+        .tab-trigger :global(svg) {
+            pointer-events: none;
+            flex-shrink: 0;
+        }
+
+        .tab-trigger :global(svg:not([class*="size-"])) {
+            width: calc(var(--spacing) * 4);
+            height: calc(var(--spacing) * 4);
+        }
+
+
+        /* Active styles - repeated in Tabs-Content.astro to enable immediate styling before the javascript takes over */
+        /* ↓↓↓↓↓  ↓↓↓↓↓ */
+
+        .tab-trigger[data-active] {
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        :global(:where(.group\/tabs-list)[data-variant="default"]) .tab-trigger[data-active] {
+            --trigger-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        :global(:where(.group\/tabs-list)[data-variant="line"]) .tab-trigger[data-active] {
+            background-color: transparent;
+            --trigger-shadow: 0 0 #0000;
+        }
+
+        :global(:where(.group\/tabs-list)[data-variant="line"]) .tab-trigger[data-active]::after {
+            opacity: 1;
+        }
+
+        /* ↑↑↑↑↑  ↑↑↑↑↑ */
+
+        :global(.dark) .tab-trigger {
+            color: var(--muted-foreground);
+        }
+
+        @media (hover: hover) {
+            :global(.dark) .tab-trigger:hover {
+                color: var(--foreground);
+            }
+        }
+
+        :global(.dark) .tab-trigger[data-active] {
+            border-color: var(--input);
+            background-color: color-mix(in oklab, var(--input) 30%, transparent);
+            color: var(--foreground);
+        }
+
+        :global(.dark) :global(:where(.group\/tabs-list)[data-variant="line"]) .tab-trigger[data-active] {
+            border-color: transparent;
+            background-color: transparent;
+        }
+    }
+</style>

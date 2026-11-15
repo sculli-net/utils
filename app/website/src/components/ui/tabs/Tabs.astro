@@ -1,0 +1,54 @@
+---
+import { cn } from "@/lib/utils";
+
+interface Props {
+    class?: string;
+    defaultValue?: string;
+}
+
+const { class: className, defaultValue } = Astro.props;
+
+const hiddenStyle = `
+tabs-root [data-slot="tabs-content"][data-tabs-value] {
+    display: none;
+}
+
+tabs-root ${!defaultValue ? `:nth-child(1 of ` : ''}[data-slot="tabs-content"]${defaultValue ? `[data-tabs-value='${defaultValue}']` : ')'} {
+    display: contents;
+}
+    
+tabs-root [data-slot="tabs-trigger"]${defaultValue ? `[data-tabs-value='${defaultValue}']` : ':first-of-type'} {
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+tabs-root [data-slot="tabs-list"][data-variant="default"] [data-slot="tabs-trigger"]${defaultValue ? `[data-tabs-value='${defaultValue}']` : ':first-of-type'} {
+    --trigger-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+tabs-root [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]${defaultValue ? `[data-tabs-value='${defaultValue}']` : ':first-of-type'} {
+    background-color: transparent;
+    --trigger-shadow: 0 0 #0000;
+}
+
+tabs-root [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]${defaultValue ? `[data-tabs-value='${defaultValue}']` : ':first-of-type'}::after {
+    opacity: 1;
+}
+
+`
+
+---
+
+<tabs-root defaultValue={defaultValue} class={cn("flex flex-col gap-2 group/tabs", className)}>
+    <slot />
+</tabs-root>
+
+<style set:html={hiddenStyle} id="tabs-hidden-style">
+    /* tabs-root [data-slot="tabs-trigger"]{
+        --tabs-list-gap: 8px;
+    } */
+</style>
+
+<script>
+    import "./tabs-root";
+</script>

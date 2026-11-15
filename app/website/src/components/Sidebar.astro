@@ -1,28 +1,29 @@
 ---
-import ChevronRight from '@/assets/icons/chevron-right.svg';
-import { packageList, pkgHref, type Package } from '@/lib/packages';
+import Github from '@/assets/icons/github.svg';
+import Npm from '@/assets/logos/npm/logo.svg';
+import { pkgHref, type Package } from '@/lib/packages';
 
 import PackageSelector from "@/components/navigation/PackageSelection.astro"
 
 interface Props {
-	pkg: Package;
+	pkg?: Package;
 }
 
 const { pkg } = Astro.props;
 
-const tabs = [
+const tabs = pkg ? [
 	// Home only matches its own path; the others also match the pages beneath them
 	{ label: 'Home', href: pkgHref(pkg), exact: true },
 	{ label: 'Docs', href: pkgHref(pkg, 'docs'), exact: false },
 	{ label: 'Playground', href: pkgHref(pkg, 'playground'), exact: false },
-];
+] : [{ label: 'Home', href: '/', exact: true }];
+const repository = `https://github.com/sculli-net/utils${pkg ? `/tree/main/packages/${pkg.label}` : ''}`;
+const npm = `https://www.npmjs.com/package/${pkg?.name}`;
 
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string, exact: boolean) => (exact ? current === href : current === href || current.startsWith(`${href}/`));
 
-/** The same section in another package. Doc pages differ between packages, so they land on the docs index */
-const section = current.split('/')[2];
-const switchHref = (other: Package) => pkgHref(other, section ?? '');
+
 ---
 
 <style>
@@ -54,9 +55,6 @@ li[data-sidebar-component="nav-item"] {
 	border-radius: var(--radius-md);
 }
 
-li[] {
-	background-color: color-mix(in oklab, var(--color-neutral-900) 80%, transparent);
-}
 
 .highlight {
   position: absolute;
@@ -85,72 +83,16 @@ li[] {
   }
 }
 
-/* The package switcher opens below its trigger; without anchor positioning it sits top left */
-.package-trigger {
-	anchor-name: --package-trigger;
-}
-
-.package-menu {
-	position-anchor: --package-trigger;
-	top: calc(anchor(bottom) + var(--spacing));
-	left: anchor(left);
-	min-width: anchor-size(width);
-}
-
-@supports not (anchor-name: --a) {
-	.package-menu {
-		top: 4rem;
-		left: 1rem;
-	}
-}
-
-.package-chevron {
-	transform: rotate(90deg);
-	transition: transform 150ms ease;
-}
-
-.package-trigger:has(+ .package-menu:popover-open) .package-chevron {
-	transform: rotate(-90deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.package-chevron {
-		transition: none;
-	}
-}
+.repository-link { display: flex; flex: 1; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; font-size: 13px; color: #525252; }
+.repository-link:hover { background: rgb(23 23 23 / .07); color: #171717; }
+.repository-link:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.repository-link :global(svg) { width: 18px; height: 18px; fill: currentColor; }
+@media (max-width: 767px) { .repository-link { position: absolute; right: 16px; top: 20px; } .repository-link span { display: none; } }
 
 </style>
 
-<aside transition:persist={`sidebar-${pkg.id}`} class="border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
-	<PackageSelector />
-	<div class="mb-4">
-		<button
-			type="button"
-			popovertarget="package-switcher"
-			aria-haspopup="true"
-			aria-label={`${pkg.name}: switch package`}
-			class="package-trigger flex w-full items-center justify-between gap-2 rounded-md px-3 py-1 text-left text-lg font-semibold transition-colors duration-150 hover:bg-neutral-900/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
-		>
-			<span class="truncate">{pkg.name}</span>
-			<ChevronRight class="package-chevron size-4 shrink-0 text-neutral-500" aria-hidden="true" />
-		</button>
-		<div id="package-switcher" popover class="package-menu m-0 min-w-48 rounded-md border border-neutral-200 bg-white p-1 text-neutral-900 shadow-sm">
-			<ul class="flex flex-col gap-0.5">
-				{packageList.map((other) => (
-					<li>
-						<a
-							href={switchHref(other)}
-							data-package-link={other.id}
-							aria-current={other.id === pkg.id ? 'true' : undefined}
-							class="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-900/10 hover:text-neutral-900 focus-visible:outline-2 focus-visible:outline-neutral-900 aria-[current=true]:font-medium aria-[current=true]:text-neutral-900"
-						>
-							{other.name}
-						</a>
-					</li>
-				))}
-			</ul>
-		</div>
-	</div>
+<aside transition:persist={`sidebar-${pkg?.id ?? 'root'}`} class="relative flex flex-col gap-4 border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
+	<div class="mr-12 md:mr-0"><PackageSelector pkg={pkg} /></div>
 	<nav data-sidebar-component="nav-wrapper">
 		<ul class="flex gap-1 md:flex-col">
 			{tabs.map(({ label, href, exact }) => (
@@ -169,6 +111,10 @@ li[] {
 			<span class="highlight" aria-hidden="true"></span>
 		</ul>
 	</nav>
+	<div class="flex gap-2 items-stretch mt-auto">
+		<a class="repository-link" href={repository} aria-label="GitHub repository" title="GitHub repository"><Github aria-hidden="true" /><span>GitHub</span></a>
+		{pkg && <a class="repository-link" href={npm} aria-label="npm package" title="npm package"><Npm aria-hidden="true" /><span>npm</span></a>}
+	</div>
 </aside>
 
 <script>
@@ -178,7 +124,7 @@ li[] {
 		const path = location.pathname.replace(/\/$/, '') || '/';
 
 		document.querySelectorAll<HTMLAnchorElement>('[data-sidebar-component="nav-item"] a').forEach((link) => {
-			const href = link.pathname.replace(/\/$/, '');
+			const href = link.pathname.replace(/\/$/, '') || '/';
 			const match = 'exact' in link.dataset ? path === href : path === href || path.startsWith(`${href}/`);
 			if (match) link.setAttribute('aria-current', 'page');
 			else link.removeAttribute('aria-current');
@@ -190,6 +136,6 @@ li[] {
 			link.href = `/${link.dataset.packageLink}${section ? `/${section}` : ''}`;
 		});
 
-		document.querySelector<HTMLElement>('#package-switcher:popover-open')?.hidePopover();
+		document.querySelector<HTMLElement>('[data-slot="dropdown-content"]:popover-open')?.hidePopover();
 	});
 </script>
